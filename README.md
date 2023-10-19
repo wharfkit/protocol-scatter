@@ -1,21 +1,6 @@
 # @wharfkit/protocol-scatter
 
-A Session Kit wallet plugin for the [Scatter](https://github.com/GetScatter/ScatterDesktop) wallet.
-
-## Usage
-
-Include this wallet plugin while initializing the SessionKit.
-
-**NOTE**: This wallet plugin will only work with the SessionKit and requires a browser-based environment.
-
-```ts
-import {WalletPluginScatter} from '@wharfkit/protocol-scatter'
-
-const kit = new SessionKit({
-    // ... your other options
-    walletPlugins: [new WalletPluginScatter()],
-})
-```
+Abstract functions for use by various Scatter-based wallet plugins.
 
 ## Developing
 
