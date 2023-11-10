@@ -1,7 +1,7 @@
 import {assert} from 'chai'
 import {PermissionLevel, SessionKit} from '@wharfkit/session'
 
-import {WalletPluginScatter} from '$lib'
+// import {WalletPluginScatter} from '$lib'
 import {mockFetch} from '$test/utils/mock-fetch'
 import {MockStorage} from '$test/utils/mock-storage'
 import {MockUserInterface} from '$test/utils/mock-ui'
@@ -11,16 +11,16 @@ const mockChainDefinition = {
     url: 'https://eos.greymass.com',
 }
 
-const mockPermissionLevel = PermissionLevel.from('wharfkit1111@test')
+// const mockPermissionLevel = PermissionLevel.from('wharfkit1111@test')
 
-const mockSessionKitOptions = {
-    appName: 'unittests',
-    chains: [mockChainDefinition],
-    fetch: mockFetch, // Required for unit tests
-    storage: new MockStorage(),
-    ui: new MockUserInterface(),
-    walletPlugins: [new WalletPluginScatter()],
-}
+// const mockSessionKitOptions = {
+//     appName: 'unittests',
+//     chains: [mockChainDefinition],
+//     fetch: mockFetch, // Required for unit tests
+//     storage: new MockStorage(),
+//     ui: new MockUserInterface(),
+//     walletPlugins: [new WalletPluginScatter()],
+// }
 
 suite('protocol testing', function () {
     this.timeout(120 * 1000)
