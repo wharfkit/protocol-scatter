@@ -14,9 +14,12 @@ import {
 } from '@wharfkit/session'
 
 import {Api, JsonRpc} from 'eosjs'
-import {ScatterAccount, ScatterIdentity, ScatterJS} from 'scatter-ts'
+import {ScatterAccount, ScatterEOS, ScatterIdentity, ScatterJS} from 'scatter-ts'
 
 export async function getScatter(context): Promise<{account: ScatterAccount; connector: any}> {
+    // register scatter plugins
+    ScatterJS.plugins(new ScatterEOS())
+
     // Setup network
     const url = new URL(context.chain.url)
     const protocol = url.protocol.replace(':', '') === 'https' ? 'https' : 'http'
