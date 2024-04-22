@@ -16,7 +16,7 @@ import {
 import {Api, JsonRpc} from 'eosjs'
 import {ScatterAccount, ScatterEOS, ScatterIdentity, ScatterJS} from 'scatter-ts'
 
-export async function getScatter(context): Promise<{account: ScatterAccount; connector: any}> {
+export async function getScatter(context): Promise<{scatter: any; connector: any}> {
     // register scatter plugins
     ScatterJS.plugins(new ScatterEOS())
 
@@ -37,20 +37,13 @@ export async function getScatter(context): Promise<{account: ScatterAccount; con
         throw new Error('Unable to connect with Scatter wallet')
     }
 
-    // Ensure connection and get identity
-    const scatterIdentity: ScatterIdentity = await ScatterJS.login()
-    if (!scatterIdentity || !scatterIdentity.accounts) {
-        throw new Error('Unable to retrieve account from Scatter')
-    }
-    const account: ScatterAccount = scatterIdentity.accounts[0]
-
     // Establish connector
     const rpc = new JsonRpc(network.fullhost())
     rpc.getRequiredKeys = async () => [] // Hacky way to get around getRequiredKeys
     const connector = ScatterJS.eos(network, Api, {rpc})
 
     return {
-        account,
+        scatter: ScatterJS,
         connector,
     }
 }
@@ -63,7 +56,15 @@ export async function handleLogin(context: LoginContext): Promise<WalletPluginLo
     // Retrieve translation helper from the UI, passing the app ID
     // const t = context.ui.getTranslate(this.id)
 
-    const {account} = await getScatter(context)
+    const {scatter} = await getScatter(context)
+
+    // login
+    const scatterIdentity: ScatterIdentity = await scatter.login()
+    if (!scatterIdentity || !scatterIdentity.accounts) {
+        throw new Error('Unable to retrieve account from Scatter')
+    }
+    const account: ScatterAccount = scatterIdentity.accounts[0]
+
     let chainId: string
     if (account.chainId) {
         chainId = account.chainId
@@ -94,7 +95,12 @@ export async function handleSignatureRequest(
     // const t = context.ui.getTranslate(this.id)
 
     // Get the connector from Scatter
-    const {connector} = await getScatter(context)
+    const {scatter, connector} = await getScatter(context)
+
+    const currentIdentity: ScatterIdentity = await scatter.checkLogin()
+    if (!currentIdentity || !currentIdentity.accounts) {
+        throw new Error('Please login first')
+    }
 
     // Encode the resolved transaction
     const encoded = Serializer.encode({object: resolved.transaction})
