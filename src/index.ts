@@ -3,6 +3,7 @@ import {
     Chains,
     Checksum256,
     LoginContext,
+    LogoutContext,
     PermissionLevel,
     ResolvedSigningRequest,
     Serializer,
@@ -81,6 +82,14 @@ export async function handleLogin(context: LoginContext): Promise<WalletPluginLo
         chain: Checksum256.from(chainId),
         permissionLevel: PermissionLevel.from(`${account.name}@${account.authority}`),
     }
+}
+
+export async function handleLogout(context: LogoutContext): Promise<void> {
+    if (context.session === undefined) {
+        throw new Error('Unknown session')
+    }
+    const {scatter} = await getScatter({appName: context.appName, chain: context.session.chain})
+    await scatter.logout()
 }
 
 export async function handleSignatureRequest(
